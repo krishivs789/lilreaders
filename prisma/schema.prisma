@@ -1,0 +1,38 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Registration {
+  id                  String   @id @default(cuid())
+  
+  // Step 1: Parent/Guardian & Contact Details
+  parentName          String
+  contactNumber       String
+  whatsappGroup       Boolean  @default(false)
+  email               String?
+  homeAddress         String
+
+  // Step 2: Child Details & Safety
+  childName           String
+  dateOfBirth         DateTime
+  schoolName          String
+  classGrade          String
+  emergencyInfo       String?
+
+  // Step 3: Camp Preferences & Expectations
+  preferredBatch      String
+  readingLevel        String
+  parentExpectations  String
+
+  // Step 4: Declaration
+  declarationAgreed   Boolean
+  parentSignature     String
+  
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+}
