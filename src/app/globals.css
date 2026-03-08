@@ -7,6 +7,7 @@
   --font-book: "Luckiest Guy", ui-sans-serif, system-ui, sans-serif;
   --font-form: "Noto Sans Symbols 2", ui-sans-serif, system-ui, sans-serif;
   --letter-spacing: 0.08em;
+  --letter-spacing-form: 0.02em;
   --book-border: #300a28;
 
   --color-border: var(--border);
@@ -106,6 +107,7 @@
 
 .font-form {
   font-family: var(--font-form);
+  letter-spacing: var(--letter-spacing-form);
 }
 
 /* ============================================
