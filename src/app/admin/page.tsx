@@ -1,6 +1,6 @@
 import { db } from "@/lib/db";
 import { registrations } from "@/lib/db/schema";
-import { desc } from "drizzle-orm";
+import { desc, InferSelectModel } from "drizzle-orm";
 import {
   Table,
   TableBody,
@@ -10,10 +10,12 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
+type Registration = InferSelectModel<typeof registrations>;
+
 export const dynamic = 'force-dynamic';
 
 export default async function AdminPage() {
-  const allRegistrations = await db.query.registrations.findMany({
+  const allRegistrations: Registration[] = await db.query.registrations.findMany({
     orderBy: [desc(registrations.createdAt)],
   });
 

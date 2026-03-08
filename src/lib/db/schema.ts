@@ -27,5 +27,5 @@ export const registrations = pgTable('registrations', {
   declarationAgreed: boolean('declarationAgreed').notNull(),
   parentSignature: varchar('parentSignature', { length: 256 }).notNull(),
   
-  createdAt: timestamp('createdAt').defaultNow(),
+  createdAt: timestamp('createdAt').defaultNow().notNull(),
 });
