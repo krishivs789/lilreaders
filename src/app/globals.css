@@ -5,6 +5,7 @@
 @theme {
   --font-sans: "Luckiest Guy", ui-sans-serif, system-ui, sans-serif;
   --font-book: "Luckiest Guy", ui-sans-serif, system-ui, sans-serif;
+  --font-form: "Noto Sans Symbols 2", ui-sans-serif, system-ui, sans-serif;
   --letter-spacing: 0.08em;
   --book-border: #300a28;
 
@@ -101,6 +102,10 @@
     position: relative;
     z-index: 1;
   }
+}
+
+.font-form {
+  font-family: var(--font-form);
 }
 
 /* ============================================
