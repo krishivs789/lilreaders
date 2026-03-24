@@ -98,52 +98,42 @@ export default function RegistrationForm() {
     
     if (output) {
       setIsFlipping(true);
+      const newPage = currentPage + 1;
       try {
         const pageFlip = pageFlipInstanceRef.current || (flipBookRef.current?.pageFlip?.());
-        if (pageFlip && typeof pageFlip.flipNext === 'function') {
+        if (pageFlip && typeof pageFlip.turnToPage === 'function') {
+          pageFlip.turnToPage(newPage);
+        } else if (pageFlip && typeof pageFlip.flipNext === 'function') {
           pageFlip.flipNext();
-        } else if (pageFlip && typeof pageFlip.turnToNextPage === 'function') {
-          pageFlip.turnToNextPage();
-        } else {
-          console.log('Flip methods not available, using turnToPage');
-          if (pageFlip && typeof pageFlip.turnToPage === 'function') {
-            pageFlip.turnToPage(currentPage + 1);
-          }
         }
-        setTimeout(() => {
-          setCurrentPage(prev => Math.min(prev + 1, STEPS.length - 1));
-          setIsFlipping(false);
-        }, 650);
       } catch (err) {
         console.error('Flip error:', err);
-        setIsFlipping(false);
       }
+      setTimeout(() => {
+        setCurrentPage(newPage);
+        setIsFlipping(false);
+      }, 650);
     }
   };
 
   const goToPrevPage = () => {
     if (currentPage > 0 && !isFlipping) {
       setIsFlipping(true);
+      const newPage = currentPage - 1;
       try {
         const pageFlip = pageFlipInstanceRef.current || (flipBookRef.current?.pageFlip?.());
-        if (pageFlip && typeof pageFlip.flipPrev === 'function') {
+        if (pageFlip && typeof pageFlip.turnToPage === 'function') {
+          pageFlip.turnToPage(newPage);
+        } else if (pageFlip && typeof pageFlip.flipPrev === 'function') {
           pageFlip.flipPrev();
-        } else if (pageFlip && typeof pageFlip.turnToPrevPage === 'function') {
-          pageFlip.turnToPrevPage();
-        } else {
-          console.log('Flip methods not available, using turnToPage');
-          if (pageFlip && typeof pageFlip.turnToPage === 'function') {
-            pageFlip.turnToPage(currentPage - 1);
-          }
         }
-        setTimeout(() => {
-          setCurrentPage(prev => Math.max(prev - 1, 0));
-          setIsFlipping(false);
-        }, 650);
       } catch (err) {
         console.error('Flip error:', err);
-        setIsFlipping(false);
       }
+      setTimeout(() => {
+        setCurrentPage(newPage);
+        setIsFlipping(false);
+      }, 650);
     }
   };
 
