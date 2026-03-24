@@ -256,7 +256,7 @@ export default function RegistrationForm() {
                 <p className="text-white/70 text-xs sm:text-sm">{STEPS[currentPage].description}</p>
               </div>
 
-              <div className="flex justify-center">
+              <div className="flex justify-center" onTouchStart={(e) => e.stopPropagation()} onTouchMove={(e) => e.stopPropagation()} onTouchEnd={(e) => e.stopPropagation()}>
                 <HTMLFlipBook
                   ref={flipBookRef}
                   width={340}
@@ -271,7 +271,7 @@ export default function RegistrationForm() {
                   maxShadowOpacity={0.6}
                   mobileScrollSupport={false}
                   className="flip-book"
-                  style={{ margin: '0 auto', touchAction: 'none' }}
+                  style={{ margin: '0 auto', touchAction: 'none', userSelect: 'none', pointerEvents: 'none' }}
                   startPage={0}
                   usePortrait={true}
                   drawShadow={true}
