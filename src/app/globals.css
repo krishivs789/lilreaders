@@ -459,23 +459,21 @@
   }
 }
 
-/* Disable user interactions on flipbook wrapper */
+/* Flipbook wrapper - allow animation but block direct interaction */
 .flip-book {
-  pointer-events: none !important;
   touch-action: none !important;
   user-select: none !important;
   -webkit-user-select: none !important;
 }
 
-/* Enable pointer events on pages and form elements */
-.flip-book .page,
-.flip-book .page > *,
-.flip-book .page-content,
-.flip-book .page-content * {
-  pointer-events: auto !important;
-  touch-action: manipulation !important;
+/* Block direct flip interactions */
+.flip-book .inner,
+.flip-book .wrapper,
+.flip-book .page-wrapper {
+  pointer-events: none !important;
 }
 
+/* Enable pointer events on form elements */
 .flip-book input,
 .flip-book select,
 .flip-book textarea,
