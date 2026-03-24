@@ -48,7 +48,7 @@ interface PageProps {
 
 const Page = React.forwardRef<HTMLDivElement, PageProps>(({ children, className, style }, ref) => {
   return (
-    <div ref={ref} className={className} style={style}>
+    <div ref={ref} className={className} style={{ ...style, pointerEvents: 'auto' }}>
       {children}
     </div>
   );
@@ -260,16 +260,16 @@ export default function RegistrationForm() {
                   maxShadowOpacity={0.5}
                   mobileScrollSupport={false}
                   className="flip-book"
-                  style={{ margin: '0 auto' }}
+                  style={{ margin: '0 auto', pointerEvents: 'none' }}
                   startPage={0}
                   usePortrait={true}
                   drawShadow={true}
                   startZIndex={0}
-                  clickEventForward={true}
-                  useMouseEvents={true}
-                  swipeDistance={30}
-                  showPageCorners={true}
-                  disableFlipByClick={false}
+                  clickEventForward={false}
+                  useMouseEvents={false}
+                  swipeDistance={0}
+                  showPageCorners={false}
+                  disableFlipByClick={true}
                   autoSize={false}
                 >
                   <Page style={pageStyle} className="p-3 sm:p-4">
