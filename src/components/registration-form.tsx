@@ -269,11 +269,29 @@ export default function RegistrationForm() {
                     touch-action: pan-y !important;
                   }
                   .flip-book .page-wrapper {
-                    box-shadow: 0 10px 30px rgba(0,0,0,0.3) !important;
+                    box-shadow: 0 8px 30px rgba(0,0,0,0.4) !important;
                   }
                   .flip-book .st1 {
                     background: rgba(255,255,255,0.08) !important;
                     backdrop-filter: blur(20px) !important;
+                  }
+                  .flip-book .page--front {
+                    border-radius: 0 8px 8px 0 !important;
+                  }
+                  .flip-book .page--back {
+                    border-radius: 8px 0 0 8px !important;
+                  }
+                  .flip-book .pageCurr {
+                    z-index: 10 !important;
+                  }
+                  .flip-book .pageNext {
+                    z-index: 5 !important;
+                  }
+                  .flip-book .pageShadow {
+                    background: linear-gradient(to right, rgba(0,0,0,0.3) 0%, transparent 60%) !important;
+                  }
+                  .flip-book:hover .page-wrapper {
+                    box-shadow: 0 12px 40px rgba(0,0,0,0.5) !important;
                   }
                 `}</style>
                 
@@ -287,8 +305,8 @@ export default function RegistrationForm() {
                   minHeight={400}
                   size="stretch"
                   showCover={false}
-                  flippingTime={600}
-                  maxShadowOpacity={0.4}
+                  flippingTime={800}
+                  maxShadowOpacity={0.5}
                   mobileScrollSupport={false}
                   className="flip-book"
                   onFlip={onPageFlip}
@@ -301,7 +319,7 @@ export default function RegistrationForm() {
                   clickEventForward={true}
                   useMouseEvents={true}
                   swipeDistance={30}
-                  showPageCorners={false}
+                  showPageCorners={true}
                   disableFlipByClick={false}
                 >
                   <Page style={pageStyle} className="p-3 sm:p-4">
