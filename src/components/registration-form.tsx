@@ -90,17 +90,20 @@ export default function RegistrationForm() {
   ];
 
   const goToNextPage = async () => {
+    if (isFlipping || currentPage >= STEPS.length - 1) return;
+    
     const fields = fieldsByStep[currentPage];
     const output = await trigger(fields, { shouldFocus: true });
-    if (output && currentPage < STEPS.length - 1 && !isFlipping) {
+    
+    if (output) {
       setIsFlipping(true);
       if (flipBookRef.current) {
         flipBookRef.current.flipNext();
       }
       setTimeout(() => {
-        setCurrentPage(p => p + 1);
+        setCurrentPage(p => Math.min(p + 1, STEPS.length - 1));
         setIsFlipping(false);
-      }, 400);
+      }, 700);
     }
   };
 
@@ -111,9 +114,9 @@ export default function RegistrationForm() {
         flipBookRef.current.flipPrev();
       }
       setTimeout(() => {
-        setCurrentPage(p => p - 1);
+        setCurrentPage(p => Math.max(p - 1, 0));
         setIsFlipping(false);
-      }, 400);
+      }, 700);
     }
   };
 
@@ -317,7 +320,7 @@ export default function RegistrationForm() {
                   minHeight={450}
                   size="stretch"
                   showCover={false}
-                  flippingTime={800}
+                  flippingTime={600}
                   maxShadowOpacity={0.5}
                   mobileScrollSupport={false}
                   className="flip-book"
@@ -328,11 +331,11 @@ export default function RegistrationForm() {
                   drawShadow={true}
                   autoSize={true}
                   startZIndex={0}
-                  clickEventForward={false}
-                  useMouseEvents={false}
-                  swipeDistance={50}
+                  clickEventForward={true}
+                  useMouseEvents={true}
+                  swipeDistance={40}
                   showPageCorners={false}
-                  disableFlipByClick={false}
+                  disableFlipByClick={true}
                 >
                   <Page style={pageStyle} className="p-3 sm:p-4">
                     <div className="space-y-3">
@@ -488,8 +491,16 @@ export default function RegistrationForm() {
               </div>
 
               <div className="flex justify-center gap-1.5 sm:gap-2 mt-4 sm:mt-5">
-                {STEPS.map((_, idx) => (
-                  <div key={idx} className="h-1.5 sm:h-2 rounded-full transition-all" style={{ width: idx === currentPage ? '1.5rem sm:2rem' : '0.5rem', backgroundColor: idx === currentPage ? '#6367FF' : 'rgba(255,255,255,0.2)', boxShadow: idx === currentPage ? '0 2px 10px rgba(99, 103, 255, 0.5)' : 'none' }} />
+                {STEPS.map((step, idx) => (
+                  <div 
+                    key={step.id} 
+                    className="h-1.5 sm:h-2 rounded-full transition-all"
+                    style={{ 
+                      width: idx === currentPage ? '24px' : '8px',
+                      backgroundColor: idx === currentPage ? '#6367FF' : 'rgba(255,255,255,0.3)',
+                      boxShadow: idx === currentPage ? '0 2px 10px rgba(99, 103, 255, 0.5)' : 'none'
+                    }} 
+                  />
                 ))}
               </div>
             </div>
