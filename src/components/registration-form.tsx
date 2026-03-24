@@ -256,7 +256,7 @@ export default function RegistrationForm() {
                 <p className="text-white/70 text-xs sm:text-sm">{STEPS[currentPage].description}</p>
               </div>
 
-              <div className="flex justify-center">
+              <div className="flex justify-center" style={{ perspective: '2000px' }}>
                 <HTMLFlipBook
                   ref={flipBookRef}
                   width={340}
@@ -267,8 +267,8 @@ export default function RegistrationForm() {
                   maxWidth={420}
                   maxHeight={620}
                   showCover={false}
-                  flippingTime={800}
-                  maxShadowOpacity={0.8}
+                  flippingTime={1200}
+                  maxShadowOpacity={1}
                   mobileScrollSupport={false}
                   className="flip-book"
                   style={{ margin: '0 auto' }}
