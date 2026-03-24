@@ -335,6 +335,15 @@ export default function RegistrationForm() {
                   .flip-book ::-webkit-scrollbar {
                     display: none !important;
                   }
+                  .flip-book input,
+                  .flip-book select,
+                  .flip-book textarea {
+                    pointer-events: auto !important;
+                    touch-action: manipulation !important;
+                  }
+                  .flip-book .page-content > div {
+                    pointer-events: auto !important;
+                  }
                 `}</style>
                 
                 <HTMLFlipBook
