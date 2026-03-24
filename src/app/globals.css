@@ -459,47 +459,17 @@
   }
 }
 
-/* Flipbook 3D effect */
-.flip-book {
-  transform-style: preserve-3d;
+/* Book page container for 3D effect */
+.book-page-container {
   perspective: 2000px;
-  touch-action: none !important;
-  user-select: none !important;
-  -webkit-user-select: none !important;
-}
-
-.flip-book .inner {
   transform-style: preserve-3d;
-  perspective: 2000px;
+  width: 340px;
+  min-height: 480px;
 }
 
-/* Make page turning more visible */
-.flip-book .page-wrapper {
+.book-page-container .page-inner {
   transform-style: preserve-3d;
-  transition: transform 1.2s ease-in-out !important;
-}
-
-.flip-book .page-front,
-.flip-book .page-back {
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-}
-
-/* Block direct flip interactions */
-.flip-book .wrapper,
-.flip-book .page-wrapper {
-  pointer-events: none !important;
-}
-
-/* Enable pointer events on form elements */
-.flip-book input,
-.flip-book select,
-.flip-book textarea,
-.flip-book button,
-.flip-book label {
-  pointer-events: auto !important;
-  touch-action: manipulation !important;
-  user-select: auto !important;
-  -webkit-user-select: auto !important;
-  cursor: text !important;
+  box-shadow: 
+    0 25px 50px -12px rgba(0, 0, 0, 0.5),
+    -5px 0 15px rgba(0, 0, 0, 0.2);
 }
