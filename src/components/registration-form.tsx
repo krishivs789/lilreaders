@@ -299,6 +299,12 @@ export default function RegistrationForm() {
                   .flip-book .bookWrapper {
                     margin: 0 auto !important;
                   }
+                  .flip-book .page-content {
+                    overflow: hidden !important;
+                  }
+                  .flip-book ::-webkit-scrollbar {
+                    display: none !important;
+                  }
                 `}</style>
                 
                 <HTMLFlipBook
@@ -393,7 +399,7 @@ export default function RegistrationForm() {
                   </Page>
 
                   <Page style={pageStyle} className="p-3 sm:p-4">
-                    <div className="space-y-3 overflow-y-auto" style={{ maxHeight: '420px' }}>
+                    <div className="space-y-3">
                       <div>
                         <label className="block text-xs sm:text-sm font-medium mb-2 sm:mb-3 text-white drop-shadow">Preferred Batch *</label>
                         <div className="grid grid-cols-1 gap-2">
