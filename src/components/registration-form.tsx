@@ -64,6 +64,7 @@ export default function RegistrationForm() {
   const [isFlipping, setIsFlipping] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const flipBookRef = useRef<any>(null);
+  const pageFlipInstanceRef = useRef<any>(null);
 
   const { register, handleSubmit, trigger, formState: { errors }, setValue, watch } = useForm<RegistrationValues>({
     resolver: zodResolver(registrationSchema),
@@ -98,8 +99,16 @@ export default function RegistrationForm() {
     if (output) {
       setIsFlipping(true);
       try {
-        if (flipBookRef.current) {
-          flipBookRef.current.flipNext();
+        const pageFlip = pageFlipInstanceRef.current || (flipBookRef.current?.pageFlip?.());
+        if (pageFlip && typeof pageFlip.flipNext === 'function') {
+          pageFlip.flipNext();
+        } else if (pageFlip && typeof pageFlip.turnToNextPage === 'function') {
+          pageFlip.turnToNextPage();
+        } else {
+          console.log('Flip methods not available, using turnToPage');
+          if (pageFlip && typeof pageFlip.turnToPage === 'function') {
+            pageFlip.turnToPage(currentPage + 1);
+          }
         }
         setTimeout(() => {
           setCurrentPage(prev => Math.min(prev + 1, STEPS.length - 1));
@@ -116,8 +125,16 @@ export default function RegistrationForm() {
     if (currentPage > 0 && !isFlipping) {
       setIsFlipping(true);
       try {
-        if (flipBookRef.current) {
-          flipBookRef.current.flipPrev();
+        const pageFlip = pageFlipInstanceRef.current || (flipBookRef.current?.pageFlip?.());
+        if (pageFlip && typeof pageFlip.flipPrev === 'function') {
+          pageFlip.flipPrev();
+        } else if (pageFlip && typeof pageFlip.turnToPrevPage === 'function') {
+          pageFlip.turnToPrevPage();
+        } else {
+          console.log('Flip methods not available, using turnToPage');
+          if (pageFlip && typeof pageFlip.turnToPage === 'function') {
+            pageFlip.turnToPage(currentPage - 1);
+          }
         }
         setTimeout(() => {
           setCurrentPage(prev => Math.max(prev - 1, 0));
@@ -321,7 +338,12 @@ export default function RegistrationForm() {
                 `}</style>
                 
                 <HTMLFlipBook
-                  ref={flipBookRef}
+                  ref={(el) => {
+                    flipBookRef.current = el;
+                    if (el && el.pageFlip) {
+                      pageFlipInstanceRef.current = el.pageFlip();
+                    }
+                  }}
                   width={350}
                   height={520}
                   maxWidth={400}
