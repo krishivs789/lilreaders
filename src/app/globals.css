@@ -460,10 +460,21 @@
 }
 
 /* Enable pointer events on form elements inside flipbook */
-.flip-book *,
-.flip-book * input,
-.flip-book * select,
-.flip-book * textarea,
-.flip-book * button {
+.flip-book,
+.flip-book * {
   pointer-events: auto !important;
+  touch-action: manipulation !important;
+}
+
+.flip-book .stage {
+  pointer-events: auto !important;
+}
+
+.flip-book input,
+.flip-book select,
+.flip-book textarea,
+.flip-book button,
+.flip-book label {
+  pointer-events: auto !important;
+  touch-action: manipulation !important;
 }

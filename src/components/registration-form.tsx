@@ -267,13 +267,13 @@ export default function RegistrationForm() {
                   maxShadowOpacity={0.5}
                   mobileScrollSupport={false}
                   className="flip-book"
-                  style={{ margin: '0 auto' }}
+                  style={{ margin: '0 auto', touchAction: 'none' }}
                   startPage={0}
                   usePortrait={true}
                   drawShadow={true}
                   startZIndex={0}
                   clickEventForward={false}
-                  useMouseEvents={true}
+                  useMouseEvents={false}
                   swipeDistance={0}
                   showPageCorners={false}
                   disableFlipByClick={true}
