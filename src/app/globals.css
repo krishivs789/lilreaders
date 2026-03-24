@@ -458,3 +458,12 @@
     max-height: none;
   }
 }
+
+/* Enable pointer events on form elements inside flipbook */
+.flip-book *,
+.flip-book * input,
+.flip-book * select,
+.flip-book * textarea,
+.flip-book * button {
+  pointer-events: auto !important;
+}
