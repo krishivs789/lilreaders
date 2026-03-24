@@ -96,19 +96,21 @@ export default function RegistrationForm() {
     const output = await trigger(fields, { shouldFocus: true });
     
     if (output) {
+      const nextPage = currentPage + 1;
       if (flipBookRef.current?.pageFlip) {
-        flipBookRef.current.pageFlip().flipNext();
+        flipBookRef.current.pageFlip().turnToPage(nextPage);
       }
-      setCurrentPage(p => Math.min(p + 1, STEPS.length - 1));
+      setCurrentPage(nextPage);
     }
   };
 
   const goToPrevPage = () => {
     if (currentPage > 0) {
+      const prevPage = currentPage - 1;
       if (flipBookRef.current?.pageFlip) {
-        flipBookRef.current.pageFlip().flipPrev();
+        flipBookRef.current.pageFlip().turnToPage(prevPage);
       }
-      setCurrentPage(p => Math.max(p - 1, 0));
+      setCurrentPage(prevPage);
     }
   };
 
@@ -151,11 +153,13 @@ export default function RegistrationForm() {
   }
 
   const pageStyle: React.CSSProperties = {
-    background: 'rgba(255,255,255,0.08)',
-    backdropFilter: 'blur(20px)',
-    border: '1px solid rgba(255,255,255,0.15)',
+    background: 'rgba(255,255,255,0.1)',
+    backdropFilter: 'blur(25px)',
+    WebkitBackdropFilter: 'blur(25px)',
+    border: '1px solid rgba(255,255,255,0.2)',
     boxSizing: 'border-box',
     pointerEvents: 'auto',
+    borderRadius: '8px',
   };
 
   return (
@@ -255,16 +259,16 @@ export default function RegistrationForm() {
               <div className="flex justify-center">
                 <HTMLFlipBook
                   ref={flipBookRef}
-                  width={320}
-                  height={480}
+                  width={340}
+                  height={500}
                   size="fixed"
-                  minWidth={300}
-                  minHeight={400}
-                  maxWidth={400}
-                  maxHeight={600}
+                  minWidth={320}
+                  minHeight={450}
+                  maxWidth={420}
+                  maxHeight={620}
                   showCover={false}
-                  flippingTime={800}
-                  maxShadowOpacity={0.5}
+                  flippingTime={600}
+                  maxShadowOpacity={0.6}
                   mobileScrollSupport={false}
                   className="flip-book"
                   style={{ margin: '0 auto', touchAction: 'none' }}
