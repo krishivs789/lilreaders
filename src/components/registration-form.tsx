@@ -373,8 +373,8 @@ export default function RegistrationForm() {
                   drawShadow={true}
                   autoSize={true}
                   startZIndex={0}
-                  clickEventForward={true}
-                  useMouseEvents={true}
+                  clickEventForward={false}
+                  useMouseEvents={false}
                   swipeDistance={40}
                   showPageCorners={false}
                   disableFlipByClick={true}
