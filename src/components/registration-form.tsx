@@ -328,10 +328,10 @@ export default function RegistrationForm() {
                   drawShadow={true}
                   autoSize={true}
                   startZIndex={0}
-                  clickEventForward={true}
-                  useMouseEvents={true}
-                  swipeDistance={30}
-                  showPageCorners={true}
+                  clickEventForward={false}
+                  useMouseEvents={false}
+                  swipeDistance={50}
+                  showPageCorners={false}
                   disableFlipByClick={false}
                 >
                   <Page style={pageStyle} className="p-3 sm:p-4">
