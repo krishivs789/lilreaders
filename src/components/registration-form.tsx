@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, Variants } from "framer-motion";
 import { CheckCircle2, Loader2 } from "lucide-react";
 import Image from "next/image";
 
@@ -40,8 +40,90 @@ const READING_LEVELS = ["My child does not know letters yet", "My child recogniz
 const BATCHES = ["Morning Batch", "Afternoon Batch", "Evening Batch"];
 const GRADES = ["Nursery", "LKG", "UKG", "1st Grade", "2nd Grade", "3rd Grade", "4th Grade", "5th Grade", "6th Grade", "7th Grade", "8th Grade"];
 
+const pageVariants: Variants = {
+  initial: (direction: number) => ({
+    opacity: 0,
+    rotateY: direction > 0 ? 90 : -90,
+    rotateX: 5,
+    translateZ: -200,
+    scale: 0.85,
+    transformOrigin: direction > 0 ? "left center" : "right center",
+    transition: {
+      duration: 0.6,
+      ease: [0.28, 0.4, 0.2, 1],
+    },
+  }),
+  animate: {
+    opacity: 1,
+    rotateY: 0,
+    rotateX: 0,
+    translateZ: 0,
+    scale: 1,
+    transformOrigin: "center center",
+    transition: {
+      duration: 0.7,
+      ease: [0.25, 0.46, 0.45, 0.94],
+    },
+  },
+  exit: (direction: number) => ({
+    opacity: 0,
+    rotateY: direction > 0 ? -90 : 90,
+    rotateX: -5,
+    translateZ: -100,
+    scale: 0.9,
+    transformOrigin: direction > 0 ? "right center" : "left center",
+    transition: {
+      duration: 0.6,
+      ease: [0.28, 0.4, 0.2, 1],
+    },
+  }),
+};
+
+const shadowVariants: Variants = {
+  initial: (direction: number) => ({
+    opacity: 0,
+    x: direction > 0 ? -30 : 30,
+    scale: 0.8,
+  }),
+  animate: {
+    opacity: 0.25,
+    x: 0,
+    scale: 1,
+    transition: { duration: 0.5 }
+  },
+  exit: (direction: number) => ({
+    opacity: 0,
+    x: direction > 0 ? 30 : -30,
+    scale: 0.8,
+    transition: { duration: 0.4 }
+  }),
+};
+
+const pageContentVariants: Variants = {
+  initial: (direction: number) => ({
+    opacity: 0,
+    x: direction > 0 ? 50 : -50,
+  }),
+  animate: {
+    opacity: 1,
+    x: 0,
+    transition: {
+      delay: 0.15,
+      duration: 0.5,
+    },
+  },
+  exit: {
+    opacity: 0,
+    x: 0,
+    transition: {
+      duration: 0.3,
+    },
+  },
+};
+
 export default function RegistrationForm() {
   const [currentPage, setCurrentPage] = useState(0);
+  const [direction, setDirection] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
@@ -73,12 +155,14 @@ export default function RegistrationForm() {
     const fields = fieldsByStep[currentPage];
     const output = await trigger(fields, { shouldFocus: true });
     if (output && currentPage < STEPS.length - 1) {
+      setDirection(1);
       setCurrentPage(p => p + 1);
     }
   };
 
   const goToPrevPage = () => {
     if (currentPage > 0) {
+      setDirection(-1);
       setCurrentPage(p => p - 1);
     }
   };
@@ -224,11 +308,38 @@ export default function RegistrationForm() {
                 <p className="text-white/70 text-sm">{STEPS[currentPage].description}</p>
               </div>
 
-              <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 sm:space-y-5">
-                <AnimatePresence mode="wait">
-                  <motion.div key={currentPage} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.2 }} className="space-y-4">
+              <form
+                onSubmit={handleSubmit(onSubmit)}
+                className="space-y-4 sm:space-y-5 relative"
+                style={{ perspective: "2500px", transformStyle: "preserve-3d" }}
+              >
+                <AnimatePresence mode="wait" custom={direction}>
+                  <motion.div
+                    key={currentPage}
+                    custom={direction}
+                    variants={pageVariants}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                    className="space-y-4 relative"
+                    style={{
+                      transformStyle: "preserve-3d",
+                      backfaceVisibility: "hidden",
+                    }}
+                  >
+                    <motion.div
+                      custom={direction}
+                      variants={shadowVariants}
+                      className="absolute inset-0 rounded-2xl pointer-events-none -z-10"
+                      style={{
+                        background: direction > 0 
+                          ? 'linear-gradient(to right, rgba(0,0,0,0.4) 0%, transparent 50%)'
+                          : 'linear-gradient(to left, rgba(0,0,0,0.4) 0%, transparent 50%)',
+                        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
+                      }}
+                    />
                     {currentPage === 0 && (
-                      <>
+                      <motion.div variants={pageContentVariants} custom={direction} className="space-y-4">
                         <div>
                           <label className="block text-sm font-medium mb-2 text-white drop-shadow">Child&apos;s Full Name *</label>
                           <input {...register("childName")} className="w-full px-4 py-3 rounded-lg border-2 outline-none transition-all" style={{ borderColor: errors.childName ? '#EF4444' : 'rgba(255,255,255,0.15)', backgroundColor: 'rgba(255,255,255,0.05)', color: 'white' }} placeholder="Enter name" />
@@ -260,11 +371,11 @@ export default function RegistrationForm() {
                           <label className="block text-sm font-medium mb-2 text-white drop-shadow">Emergency Information</label>
                           <textarea {...register("emergencyInfo")} className="w-full px-4 py-3 rounded-lg border-2 outline-none transition-all min-h-20 resize-none" style={{ borderColor: 'rgba(255,255,255,0.15)', backgroundColor: 'rgba(255,255,255,0.05)', color: 'white' }} placeholder="Any allergies or medical conditions?" />
                         </div>
-                      </>
+                      </motion.div>
                     )}
 
                     {currentPage === 1 && (
-                      <>
+                      <motion.div variants={pageContentVariants} custom={direction} className="space-y-4">
                         <div>
                           <label className="block text-sm font-medium mb-2 text-white drop-shadow">Parent/Guardian Name *</label>
                           <input {...register("parentName")} className="w-full px-4 py-3 rounded-lg border-2 outline-none transition-all" style={{ borderColor: errors.parentName ? '#EF4444' : 'rgba(255,255,255,0.2)', backgroundColor: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)', color: 'white' }} placeholder="Full name" />
@@ -288,11 +399,11 @@ export default function RegistrationForm() {
                           <textarea {...register("homeAddress")} className="w-full px-4 py-3 rounded-lg border-2 outline-none transition-all min-h-20 resize-none" style={{ borderColor: errors.homeAddress ? '#EF4444' : 'rgba(255,255,255,0.2)', backgroundColor: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)', color: 'white' }} placeholder="Full address" />
                           {errors.homeAddress && <p className="text-red-200 text-xs mt-1">{errors.homeAddress.message}</p>}
                         </div>
-                      </>
+                      </motion.div>
                     )}
 
                     {currentPage === 2 && (
-                      <>
+                      <motion.div variants={pageContentVariants} custom={direction} className="space-y-4">
                         <div>
                           <label className="block text-sm font-medium mb-3 text-white drop-shadow">Preferred Batch *</label>
                           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -335,11 +446,11 @@ export default function RegistrationForm() {
                           </div>
                           {errors.parentExpectations && <p className="text-red-200 text-xs mt-2">{errors.parentExpectations.message}</p>}
                         </div>
-                      </>
+                      </motion.div>
                     )}
 
                     {currentPage === 3 && (
-                      <>
+                      <motion.div variants={pageContentVariants} custom={direction} className="space-y-4">
                         <div className="p-5 rounded-xl border-2 bg-white/5 backdrop-blur-md" style={{ borderColor: 'rgba(255,255,255,0.2)' }}>
                           <h4 className="font-bold mb-3 text-white drop-shadow">Declaration</h4>
                           <div className="flex items-start gap-3 cursor-pointer" onClick={() => setValue("declarationAgreed", !declarationAgreed, { shouldValidate: true })}>
@@ -356,7 +467,7 @@ export default function RegistrationForm() {
                         <div className="p-3 rounded-lg bg-white/10 backdrop-blur-md border border-white/20">
                           <p className="text-white/70 text-sm">Date: {new Date().toLocaleDateString('en-GB')}</p>
                         </div>
-                      </>
+                      </motion.div>
                     )}
                   </motion.div>
                 </AnimatePresence>
