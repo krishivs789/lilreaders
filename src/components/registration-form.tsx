@@ -97,26 +97,36 @@ export default function RegistrationForm() {
     
     if (output) {
       setIsFlipping(true);
-      if (flipBookRef.current) {
-        flipBookRef.current.flipNext();
-      }
-      setTimeout(() => {
-        setCurrentPage(p => Math.min(p + 1, STEPS.length - 1));
+      try {
+        if (flipBookRef.current) {
+          flipBookRef.current.flipNext();
+        }
+        setTimeout(() => {
+          setCurrentPage(prev => Math.min(prev + 1, STEPS.length - 1));
+          setIsFlipping(false);
+        }, 650);
+      } catch (err) {
+        console.error('Flip error:', err);
         setIsFlipping(false);
-      }, 700);
+      }
     }
   };
 
   const goToPrevPage = () => {
     if (currentPage > 0 && !isFlipping) {
       setIsFlipping(true);
-      if (flipBookRef.current) {
-        flipBookRef.current.flipPrev();
-      }
-      setTimeout(() => {
-        setCurrentPage(p => Math.max(p - 1, 0));
+      try {
+        if (flipBookRef.current) {
+          flipBookRef.current.flipPrev();
+        }
+        setTimeout(() => {
+          setCurrentPage(prev => Math.max(prev - 1, 0));
+          setIsFlipping(false);
+        }, 650);
+      } catch (err) {
+        console.error('Flip error:', err);
         setIsFlipping(false);
-      }, 700);
+      }
     }
   };
 
@@ -325,6 +335,7 @@ export default function RegistrationForm() {
                   mobileScrollSupport={false}
                   className="flip-book"
                   onFlip={onPageFlip}
+                  onChangeState={(state: string) => console.log('Flip state:', state)}
                   style={{ margin: '0 auto' }}
                   startPage={0}
                   usePortrait={true}
