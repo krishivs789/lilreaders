@@ -103,8 +103,6 @@ export default function RegistrationForm() {
         const pageFlip = pageFlipInstanceRef.current || (flipBookRef.current?.pageFlip?.());
         if (pageFlip && typeof pageFlip.turnToPage === 'function') {
           pageFlip.turnToPage(newPage);
-        } else if (pageFlip && typeof pageFlip.flipNext === 'function') {
-          pageFlip.flipNext();
         }
       } catch (err) {
         console.error('Flip error:', err);
@@ -112,7 +110,7 @@ export default function RegistrationForm() {
       setTimeout(() => {
         setCurrentPage(newPage);
         setIsFlipping(false);
-      }, 650);
+      }, 100);
     }
   };
 
@@ -124,8 +122,6 @@ export default function RegistrationForm() {
         const pageFlip = pageFlipInstanceRef.current || (flipBookRef.current?.pageFlip?.());
         if (pageFlip && typeof pageFlip.turnToPage === 'function') {
           pageFlip.turnToPage(newPage);
-        } else if (pageFlip && typeof pageFlip.flipPrev === 'function') {
-          pageFlip.flipPrev();
         }
       } catch (err) {
         console.error('Flip error:', err);
@@ -133,7 +129,7 @@ export default function RegistrationForm() {
       setTimeout(() => {
         setCurrentPage(newPage);
         setIsFlipping(false);
-      }, 650);
+      }, 100);
     }
   };
 
@@ -344,24 +340,23 @@ export default function RegistrationForm() {
                     }
                   }}
                   width={350}
-                  height={520}
+                  height={500}
                   maxWidth={400}
                   maxHeight={600}
                   minWidth={300}
-                  minHeight={450}
-                  size="stretch"
+                  minHeight={400}
+                  size="fixed"
                   showCover={false}
                   flippingTime={600}
                   maxShadowOpacity={0.5}
                   mobileScrollSupport={false}
                   className="flip-book"
                   onFlip={onPageFlip}
-                  onChangeState={(state: string) => console.log('Flip state:', state)}
                   style={{ margin: '0 auto' }}
                   startPage={0}
                   usePortrait={true}
                   drawShadow={true}
-                  autoSize={true}
+                  autoSize={false}
                   startZIndex={0}
                   clickEventForward={false}
                   useMouseEvents={false}
