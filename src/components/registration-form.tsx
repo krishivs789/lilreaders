@@ -398,51 +398,51 @@ export default function RegistrationForm() {
                     </div>
                   </Page>
 
-                  <Page style={pageStyle} className="p-3 sm:p-4">
-                    <div className="space-y-3">
+                  <Page style={pageStyle} className="p-2 sm:p-3">
+                    <div className="space-y-2">
                       <div>
-                        <label className="block text-xs sm:text-sm font-medium mb-2 sm:mb-3 text-white drop-shadow">Preferred Batch *</label>
-                        <div className="grid grid-cols-1 gap-2">
+                        <label className="block text-xs font-medium mb-1 text-white drop-shadow">Preferred Batch *</label>
+                        <div className="grid grid-cols-1 gap-1.5">
                           {BATCHES.map(b => (
-                            <div key={b} onClick={() => setValue("preferredBatch", b, { shouldValidate: true })} className="p-3 sm:p-4 rounded-xl border-2 cursor-pointer transition-all" style={{ borderColor: preferredBatch === b ? '#6367FF' : 'rgba(255,255,255,0.2)', backgroundColor: preferredBatch === b ? 'rgba(99, 103, 255, 0.3)' : 'rgba(255,255,255,0.05)' }}>
-                              <div className="flex items-center gap-3">
-                                <div className="w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0" style={{ borderColor: preferredBatch === b ? '#6367FF' : 'rgba(255,255,255,0.4)' }}>
-                                  {preferredBatch === b && <div className="w-2 h-2 rounded-full" style={{ backgroundColor: '#6367FF' }} />}
+                            <div key={b} onClick={() => setValue("preferredBatch", b, { shouldValidate: true })} className="p-2 rounded-lg border-2 cursor-pointer transition-all" style={{ borderColor: preferredBatch === b ? '#6367FF' : 'rgba(255,255,255,0.2)', backgroundColor: preferredBatch === b ? 'rgba(99, 103, 255, 0.3)' : 'rgba(255,255,255,0.05)' }}>
+                              <div className="flex items-center gap-2">
+                                <div className="w-3 h-3 rounded-full border-2 flex items-center justify-center flex-shrink-0" style={{ borderColor: preferredBatch === b ? '#6367FF' : 'rgba(255,255,255,0.4)' }}>
+                                  {preferredBatch === b && <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: '#6367FF' }} />}
                                 </div>
-                                <span className="text-sm font-medium text-white">{b}</span>
+                                <span className="text-xs font-medium text-white">{b}</span>
                               </div>
                             </div>
                           ))}
                         </div>
-                        {errors.preferredBatch && <p className="text-red-200 text-[10px] sm:text-xs mt-2">{errors.preferredBatch.message}</p>}
+                        {errors.preferredBatch && <p className="text-red-200 text-[10px] mt-1">{errors.preferredBatch.message}</p>}
                       </div>
                       <div>
-                        <label className="block text-xs sm:text-sm font-medium mb-2 sm:mb-3 text-white drop-shadow">Reading Level *</label>
-                        <div className="space-y-2">
+                        <label className="block text-xs font-medium mb-1 text-white drop-shadow">Reading Level *</label>
+                        <div className="space-y-1">
                           {READING_LEVELS.map(level => (
-                            <div key={level} onClick={() => setValue("readingLevel", level, { shouldValidate: true })} className="p-2.5 sm:p-3 rounded-xl border-2 cursor-pointer transition-all flex items-center gap-2 sm:gap-3" style={{ borderColor: readingLevel === level ? '#6367FF' : 'rgba(255,255,255,0.2)', backgroundColor: readingLevel === level ? 'rgba(99, 103, 255, 0.3)' : 'rgba(255,255,255,0.05)' }}>
-                              <div className="w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0" style={{ borderColor: readingLevel === level ? '#6367FF' : 'rgba(255,255,255,0.4)' }}>
-                                {readingLevel === level && <div className="w-2 h-2 rounded-full" style={{ backgroundColor: '#6367FF' }} />}
+                            <div key={level} onClick={() => setValue("readingLevel", level, { shouldValidate: true })} className="p-1.5 rounded-lg border-2 cursor-pointer transition-all flex items-center gap-2" style={{ borderColor: readingLevel === level ? '#6367FF' : 'rgba(255,255,255,0.2)', backgroundColor: readingLevel === level ? 'rgba(99, 103, 255, 0.3)' : 'rgba(255,255,255,0.05)' }}>
+                              <div className="w-3 h-3 rounded-full border-2 flex items-center justify-center flex-shrink-0" style={{ borderColor: readingLevel === level ? '#6367FF' : 'rgba(255,255,255,0.4)' }}>
+                                {readingLevel === level && <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: '#6367FF' }} />}
                               </div>
-                              <span className="text-xs sm:text-sm text-white">{level}</span>
+                              <span className="text-[10px] text-white leading-tight">{level}</span>
                             </div>
                           ))}
                         </div>
-                        {errors.readingLevel && <p className="text-red-200 text-[10px] sm:text-xs mt-2">{errors.readingLevel.message}</p>}
+                        {errors.readingLevel && <p className="text-red-200 text-[10px] mt-1">{errors.readingLevel.message}</p>}
                       </div>
                       <div>
-                        <label className="block text-xs sm:text-sm font-medium mb-2 sm:mb-3 text-white drop-shadow">What would you like to improve? *</label>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        <label className="block text-xs font-medium mb-1 text-white drop-shadow">What to improve? *</label>
+                        <div className="grid grid-cols-1 gap-1">
                           {EXPECTATIONS_LIST.map(exp => (
-                            <div key={exp} onClick={() => setValue("parentExpectations", exp, { shouldValidate: true })} className="p-2.5 sm:p-3 rounded-xl border-2 cursor-pointer transition-all flex items-center gap-2 sm:gap-3" style={{ borderColor: parentExpectations === exp ? '#10B981' : 'rgba(255,255,255,0.2)', backgroundColor: parentExpectations === exp ? 'rgba(16, 185, 129, 0.3)' : 'rgba(255,255,255,0.05)' }}>
-                              <div className="w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0" style={{ borderColor: parentExpectations === exp ? '#10B981' : 'rgba(255,255,255,0.4)' }}>
-                                {parentExpectations === exp && <div className="w-2 h-2 rounded-full" style={{ backgroundColor: '#10B981' }} />}
+                            <div key={exp} onClick={() => setValue("parentExpectations", exp, { shouldValidate: true })} className="p-1.5 rounded-lg border-2 cursor-pointer transition-all flex items-center gap-2" style={{ borderColor: parentExpectations === exp ? '#10B981' : 'rgba(255,255,255,0.2)', backgroundColor: parentExpectations === exp ? 'rgba(16, 185, 129, 0.3)' : 'rgba(255,255,255,0.05)' }}>
+                              <div className="w-3 h-3 rounded-full border-2 flex items-center justify-center flex-shrink-0" style={{ borderColor: parentExpectations === exp ? '#10B981' : 'rgba(255,255,255,0.4)' }}>
+                                {parentExpectations === exp && <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: '#10B981' }} />}
                               </div>
-                              <span className="text-xs sm:text-sm text-white">{exp}</span>
+                              <span className="text-[10px] text-white">{exp}</span>
                             </div>
                           ))}
                         </div>
-                        {errors.parentExpectations && <p className="text-red-200 text-[10px] sm:text-xs mt-2">{errors.parentExpectations.message}</p>}
+                        {errors.parentExpectations && <p className="text-red-200 text-[10px] mt-1">{errors.parentExpectations.message}</p>}
                       </div>
                     </div>
                   </Page>
