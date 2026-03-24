@@ -95,15 +95,19 @@ export default function RegistrationForm() {
     const fields = fieldsByStep[currentPage];
     const output = await trigger(fields, { shouldFocus: true });
     
-    if (output && flipBookRef.current) {
-      flipBookRef.current.flipNext();
+    if (output) {
+      if (flipBookRef.current?.pageFlip) {
+        flipBookRef.current.pageFlip().flipNext();
+      }
       setCurrentPage(p => Math.min(p + 1, STEPS.length - 1));
     }
   };
 
   const goToPrevPage = () => {
-    if (currentPage > 0 && flipBookRef.current) {
-      flipBookRef.current.flipPrev();
+    if (currentPage > 0) {
+      if (flipBookRef.current?.pageFlip) {
+        flipBookRef.current.pageFlip().flipPrev();
+      }
       setCurrentPage(p => Math.max(p - 1, 0));
     }
   };
