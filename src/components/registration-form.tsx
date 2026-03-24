@@ -293,16 +293,22 @@ export default function RegistrationForm() {
                   .flip-book:hover .page-wrapper {
                     box-shadow: 0 12px 40px rgba(0,0,0,0.5) !important;
                   }
+                  .flip-book {
+                    margin: 0 auto !important;
+                  }
+                  .flip-book .bookWrapper {
+                    margin: 0 auto !important;
+                  }
                 `}</style>
                 
                 <HTMLFlipBook
                   ref={flipBookRef}
-                  width={320}
-                  height={480}
-                  maxWidth={500}
-                  maxHeight={700}
-                  minWidth={280}
-                  minHeight={400}
+                  width={350}
+                  height={520}
+                  maxWidth={400}
+                  maxHeight={600}
+                  minWidth={300}
+                  minHeight={450}
                   size="stretch"
                   showCover={false}
                   flippingTime={800}
@@ -312,7 +318,7 @@ export default function RegistrationForm() {
                   onFlip={onPageFlip}
                   style={{ margin: '0 auto' }}
                   startPage={0}
-                  usePortrait={false}
+                  usePortrait={true}
                   drawShadow={true}
                   autoSize={true}
                   startZIndex={0}
