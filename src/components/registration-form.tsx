@@ -223,33 +223,33 @@ export default function RegistrationForm() {
 
           <div className="flex-1" style={{ background: 'rgba(255,255,255,0.05)', backdropFilter: 'blur(20px)' }}>
             <div className="p-3 sm:p-4 md:p-5 lg:p-6">
-              <div className="mb-4 sm:mb-6">
-                <div className="flex items-center justify-between">
+              <div className="mb-3 sm:mb-6">
+                <div className="flex items-center justify-between gap-1">
                   {STEPS.map((step, index) => (
                     <React.Fragment key={step.id}>
-                      <div className="flex flex-col items-center">
-                        <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-xs sm:text-sm font-bold transition-all flex-shrink-0" style={{
+                      <div className="flex flex-col items-center min-w-0">
+                        <div className="w-7 h-7 sm:w-9 sm:h-9 rounded-full flex items-center justify-center text-[10px] sm:text-sm font-bold transition-all flex-shrink-0" style={{
                           backgroundColor: index < currentPage ? '#10B981' : (index === currentPage ? '#6367FF' : 'rgba(255,255,255,0.3)'),
                           color: index <= currentPage ? 'white' : '#6367FF',
                           boxShadow: index === currentPage ? '0 4px 15px rgba(99, 103, 255, 0.5)' : 'none'
                         }}>
                           {index < currentPage ? "✓" : index + 1}
                         </div>
-                        <span className="mt-1 text-[10px] sm:text-xs font-medium whitespace-nowrap" style={{ color: index === currentPage ? '#6367FF' : 'rgba(255,255,255,0.6)' }}>
+                        <span className="mt-0.5 text-[9px] sm:text-xs font-medium whitespace-nowrap truncate max-w-[50px] sm:max-w-none" style={{ color: index === currentPage ? '#6367FF' : 'rgba(255,255,255,0.6)' }}>
                           {step.title}
                         </span>
                       </div>
                       {index < STEPS.length - 1 && (
-                        <div className="flex-1 h-1 mx-0.5 sm:mx-2 rounded min-w-[15px]" style={{ backgroundColor: index < currentPage ? '#10B981' : 'rgba(255,255,255,0.2)' }} />
+                        <div className="flex-1 h-1 mx-0.5 sm:mx-2 rounded min-w-[8px]" style={{ backgroundColor: index < currentPage ? '#10B981' : 'rgba(255,255,255,0.2)' }} />
                       )}
                     </React.Fragment>
                   ))}
                 </div>
               </div>
 
-              <div className="mb-4 text-center">
-                <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white drop-shadow-lg">{STEPS[currentPage].title}</h3>
-                <p className="text-white/70 text-xs sm:text-sm">{STEPS[currentPage].description}</p>
+              <div className="mb-3 text-center">
+                <h3 className="text-base sm:text-xl md:text-2xl font-bold text-white drop-shadow-lg">{STEPS[currentPage].title}</h3>
+                <p className="text-white/70 text-[10px] sm:text-sm">{STEPS[currentPage].description}</p>
               </div>
 
               <div className="flex justify-center px-1">
