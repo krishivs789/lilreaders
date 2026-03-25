@@ -42,24 +42,27 @@ const GRADES = ["Nursery", "LKG", "UKG", "1st Grade", "2nd Grade", "3rd Grade", 
 
 const pageVariants = {
   enter: (direction: number) => ({
-    rotateY: 90,
-    scaleX: 0.85,
+    x: 0,
+    rotateY: 0,
+    scale: 1,
     opacity: 0,
-    filter: 'brightness(0.8)',
+    clipPath: 'polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%)',
   }),
   center: {
+    x: 0,
     rotateY: 0,
-    scaleX: 1,
+    scale: 1,
     opacity: 1,
-    filter: 'brightness(1)',
-    transition: { duration: 0.8, ease: [0.25, 0.1, 0.25, 1] as const }
+    clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
+    transition: { duration: 0.6, ease: [0.4, 0, 0.2, 1] as const }
   },
   exit: (direction: number) => ({
-    rotateY: -90,
-    scaleX: 0.85,
+    x: 0,
+    rotateY: 0,
+    scale: 1,
     opacity: 0,
-    filter: 'brightness(0.8)',
-    transition: { duration: 0.8, ease: [0.25, 0.1, 0.25, 1] as const }
+    clipPath: 'polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%)',
+    transition: { duration: 0.6, ease: [0.4, 0, 0.2, 1] as const }
   })
 };
 
@@ -261,7 +264,7 @@ export default function RegistrationForm() {
               </div>
 
               <div className="flex justify-center">
-                <div className="book-page-container" style={{ perspective: '2000px', transformStyle: 'preserve-3d' }}>
+                <div className="book-page-container">
                   <AnimatePresence mode="wait" custom={direction}>
                     <motion.div
                       key={currentPage}
@@ -270,15 +273,15 @@ export default function RegistrationForm() {
                       initial="enter"
                       animate="center"
                       exit="exit"
-                      className="rounded-xl"
+                      className="page-wrapper"
                       style={{
-                        transformStyle: 'preserve-3d',
-                        transformOrigin: 'left center',
                         width: '340px',
                         minHeight: '480px',
+                        position: 'relative',
                       }}
                     >
-                      <div style={pageStyle} className="p-4 sm:p-5 page-inner">
+                      <div style={pageStyle} className="page-inner">
+                        <div className="book-spine" />
                         {currentPage === 0 && (
                           <div className="space-y-3">
                             <div>

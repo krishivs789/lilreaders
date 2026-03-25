@@ -459,17 +459,59 @@
   }
 }
 
-/* Book page container for 3D effect */
+/* Book page container */
 .book-page-container {
-  perspective: 2000px;
-  transform-style: preserve-3d;
+  perspective: 1500px;
   width: 340px;
   min-height: 480px;
+  position: relative;
 }
 
 .book-page-container .page-inner {
-  transform-style: preserve-3d;
+  position: relative;
   box-shadow: 
-    0 25px 50px -12px rgba(0, 0, 0, 0.5),
-    -5px 0 15px rgba(0, 0, 0, 0.2);
+    0 20px 40px rgba(0, 0, 0, 0.4),
+    5px 0 15px rgba(0, 0, 0, 0.2),
+    inset 0 0 30px rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+/* Page curl effect */
+.book-page-container .page-inner::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 40px;
+  height: 100%;
+  background: linear-gradient(to left, rgba(0,0,0,0.15), transparent);
+  pointer-events: none;
+  z-index: 10;
+}
+
+.book-page-container .page-inner::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 30px;
+  height: 30px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.3) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 11;
+}
+
+/* Spine effect on left side */
+.book-page-container .page-inner .book-spine {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 8px;
+  height: 100%;
+  background: linear-gradient(to right, 
+    rgba(0,0,0,0.3) 0%, 
+    rgba(0,0,0,0.1) 50%, 
+    transparent 100%);
+  z-index: 5;
 }
