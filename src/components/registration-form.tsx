@@ -166,7 +166,7 @@ export default function RegistrationForm() {
         <div className="absolute w-64 h-64 rounded-full opacity-35" style={{ background: 'radial-gradient(circle, #C9BEFF 0%, transparent 70%)', top: '40%', right: '20%' }} />
       </div>
 
-      <div className="max-w-5xl mx-auto relative lg:max-w-[94%]" style={{ zIndex: 1 }}>
+      <div className="max-w-5xl mx-auto relative w-full sm:w-[94%] max-sm:px-1" style={{ zIndex: 1 }}>
         <div className="lg:hidden mb-3">
           <div className="bg-white/20 backdrop-blur-xl rounded-xl sm:rounded-2xl p-3 shadow-xl border border-white/30">
             <div className="flex items-center gap-2">
