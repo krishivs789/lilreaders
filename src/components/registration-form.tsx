@@ -247,7 +247,7 @@ export default function RegistrationForm() {
                 </div>
               </div>
 
-              <div className="mb-4">
+              <div className="mb-4 text-center">
                 <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white drop-shadow-lg">{STEPS[currentPage].title}</h3>
                 <p className="text-white/70 text-xs sm:text-sm">{STEPS[currentPage].description}</p>
               </div>
