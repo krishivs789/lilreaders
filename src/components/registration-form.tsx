@@ -155,10 +155,11 @@ export default function RegistrationForm() {
     border: '1px solid rgba(255,255,255,0.2)',
     boxSizing: 'border-box',
     borderRadius: '4px',
+    overflow: 'hidden',
   };
 
   return (
-    <div className="min-h-screen p-2 sm:p-4 md:p-6 lg:p-8 font-form" style={{ backgroundImage: 'linear-gradient(135deg, #6367FF 0%, #8494FF 100%)', backgroundAttachment: 'fixed' }}>
+    <div className="min-h-screen p-3 sm:p-4 md:p-6 lg:p-8 font-form" style={{ backgroundImage: 'linear-gradient(135deg, #6367FF 0%, #8494FF 100%)', backgroundAttachment: 'fixed' }}>
       <div className="fixed inset-0 overflow-hidden pointer-events-none" style={{ zIndex: 0 }}>
         <div className="absolute w-96 h-96 rounded-full opacity-40" style={{ background: 'radial-gradient(circle, #6367FF 0%, transparent 70%)', top: '-10%', left: '-10%' }} />
         <div className="absolute w-80 h-80 rounded-full opacity-30" style={{ background: 'radial-gradient(circle, #FFDBFD 0%, transparent 70%)', bottom: '10%', right: '-5%' }} />
@@ -251,7 +252,7 @@ export default function RegistrationForm() {
                 <p className="text-white/70 text-xs sm:text-sm">{STEPS[currentPage].description}</p>
               </div>
 
-              <div className="flex justify-center">
+              <div className="flex justify-center px-1">
                 <HTMLFlipBook
                   ref={flipBookRef}
                   width={340}
@@ -278,7 +279,7 @@ export default function RegistrationForm() {
                   disableFlipByClick={true}
                   autoSize={true}
                 >
-                  <Page style={pageStyle} className="p-4 sm:p-5">
+                  <Page style={pageStyle} className="px-4 py-3 sm:px-5 sm:py-4">
                     <div className="space-y-3">
                       <div>
                         <label className="block text-xs sm:text-sm font-medium mb-1.5 sm:mb-2 text-white drop-shadow">Child&apos;s Full Name *</label>
@@ -314,7 +315,7 @@ export default function RegistrationForm() {
                     </div>
                   </Page>
 
-                  <Page style={pageStyle} className="p-4 sm:p-5">
+                  <Page style={pageStyle} className="px-4 py-3 sm:px-5 sm:py-4">
                     <div className="space-y-3">
                       <div>
                         <label className="block text-xs sm:text-sm font-medium mb-1.5 sm:mb-2 text-white drop-shadow">Parent/Guardian Name *</label>
@@ -342,7 +343,7 @@ export default function RegistrationForm() {
                     </div>
                   </Page>
 
-                  <Page style={pageStyle} className="p-3 sm:p-4">
+                  <Page style={pageStyle} className="px-4 py-3 sm:px-5 sm:py-4">
                     <div className="space-y-2">
                       <div>
                         <label className="block text-xs font-medium mb-1 text-white drop-shadow">Preferred Batch *</label>
@@ -391,7 +392,7 @@ export default function RegistrationForm() {
                     </div>
                   </Page>
 
-                  <Page style={pageStyle} className="p-4 sm:p-5">
+                  <Page style={pageStyle} className="px-4 py-3 sm:px-5 sm:py-4">
                     <div className="space-y-3">
                       <div className="p-3 sm:p-4 rounded-xl border-2 bg-white/5 backdrop-blur-md" style={{ borderColor: 'rgba(255,255,255,0.2)' }}>
                         <h4 className="font-bold mb-2 sm:mb-3 text-white drop-shadow text-sm sm:text-base">Declaration</h4>
