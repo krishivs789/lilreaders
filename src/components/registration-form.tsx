@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { motion, AnimatePresence } from "framer-motion";
+import HTMLFlipBook from "@marvellousptc/react-pageflip";
 import { CheckCircle2, Loader2 } from "lucide-react";
 import Image from "next/image";
 
@@ -40,37 +40,30 @@ const READING_LEVELS = ["My child does not know letters yet", "My child recogniz
 const BATCHES = ["Morning Batch", "Afternoon Batch", "Evening Batch"];
 const GRADES = ["Nursery", "LKG", "UKG", "1st Grade", "2nd Grade", "3rd Grade", "4th Grade", "5th Grade", "6th Grade", "7th Grade", "8th Grade"];
 
-const pageVariants = {
-  enter: (direction: number) => ({
-    x: 0,
-    rotateY: 0,
-    scale: 1,
-    opacity: 0,
-    clipPath: 'polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%)',
-  }),
-  center: {
-    x: 0,
-    rotateY: 0,
-    scale: 1,
-    opacity: 1,
-    clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
-    transition: { duration: 0.6, ease: [0.4, 0, 0.2, 1] as const }
-  },
-  exit: (direction: number) => ({
-    x: 0,
-    rotateY: 0,
-    scale: 1,
-    opacity: 0,
-    clipPath: 'polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%)',
-    transition: { duration: 0.6, ease: [0.4, 0, 0.2, 1] as const }
-  })
-};
+interface PageProps {
+  children: React.ReactNode;
+  className?: string;
+  style?: React.CSSProperties;
+}
+
+const Page = React.forwardRef<HTMLDivElement, PageProps>(({ children, className, style }, ref) => {
+  return (
+    <div ref={ref} className={className} style={style}>
+      <div className="page-content">
+        {children}
+      </div>
+    </div>
+  );
+});
+
+Page.displayName = "Page";
 
 export default function RegistrationForm() {
   const [currentPage, setCurrentPage] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
-  const [direction, setDirection] = useState(0);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const flipBookRef = useRef<any>(null);
 
   const { register, handleSubmit, trigger, formState: { errors }, setValue, watch } = useForm<RegistrationValues>({
     resolver: zodResolver(registrationSchema),
@@ -103,21 +96,17 @@ export default function RegistrationForm() {
     const output = await trigger(fields, { shouldFocus: true });
     
     if (output) {
-      setDirection(1);
-      setTimeout(() => {
-        setCurrentPage(p => Math.min(p + 1, STEPS.length - 1));
-        setDirection(0);
-      }, 50);
+      if (flipBookRef.current?.pageFlip) {
+        flipBookRef.current.pageFlip().flipNext();
+      }
+      setCurrentPage(p => Math.min(p + 1, STEPS.length - 1));
     }
   };
 
   const goToPrevPage = () => {
-    if (currentPage > 0) {
-      setDirection(-1);
-      setTimeout(() => {
-        setCurrentPage(p => Math.max(p - 1, 0));
-        setDirection(0);
-      }, 50);
+    if (currentPage > 0 && flipBookRef.current?.pageFlip) {
+      flipBookRef.current.pageFlip().flipPrev();
+      setCurrentPage(p => Math.max(p - 1, 0));
     }
   };
 
@@ -165,8 +154,7 @@ export default function RegistrationForm() {
     WebkitBackdropFilter: 'blur(25px)',
     border: '1px solid rgba(255,255,255,0.2)',
     boxSizing: 'border-box',
-    borderRadius: '8px',
-    boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
+    borderRadius: '4px',
   };
 
   return (
@@ -264,161 +252,166 @@ export default function RegistrationForm() {
               </div>
 
               <div className="flex justify-center">
-                <div className="book-page-container">
-                  <AnimatePresence mode="wait" custom={direction}>
-                    <motion.div
-                      key={currentPage}
-                      custom={direction}
-                      variants={pageVariants}
-                      initial="enter"
-                      animate="center"
-                      exit="exit"
-                      className="page-wrapper"
-                      style={{
-                        width: '340px',
-                        minHeight: '480px',
-                        position: 'relative',
-                      }}
-                    >
-                      <div style={pageStyle} className="page-inner">
-                        <div className="book-spine" />
-                        {currentPage === 0 && (
-                          <div className="space-y-3">
-                            <div>
-                              <label className="block text-xs sm:text-sm font-medium mb-1.5 sm:mb-2 text-white drop-shadow">Child&apos;s Full Name *</label>
-                              <input {...register("childName")} className="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg border-2 outline-none transition-all text-sm sm:text-base" style={{ borderColor: errors.childName ? '#EF4444' : 'rgba(255,255,255,0.15)', backgroundColor: 'rgba(255,255,255,0.05)', color: 'white' }} placeholder="Enter name" />
-                              {errors.childName && <p className="text-red-200 text-[10px] sm:text-xs mt-1">{errors.childName.message}</p>}
-                            </div>
-                            <div>
-                              <label className="block text-xs sm:text-sm font-medium mb-1.5 sm:mb-2 text-white drop-shadow">Date of Birth *</label>
-                              <input {...register("dateOfBirth")} type="date" className="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg border-2 outline-none transition-all text-sm sm:text-base" style={{ borderColor: errors.dateOfBirth ? '#EF4444' : 'rgba(255,255,255,0.15)', backgroundColor: 'rgba(255,255,255,0.05)', color: 'white' }} />
-                              {errors.dateOfBirth && <p className="text-red-200 text-[10px] sm:text-xs mt-1">{errors.dateOfBirth.message}</p>}
-                            </div>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
-                              <div>
-                                <label className="block text-xs sm:text-sm font-medium mb-1.5 sm:mb-2 text-white drop-shadow">School Name *</label>
-                                <input {...register("schoolName")} className="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg border-2 outline-none transition-all text-sm sm:text-base" style={{ borderColor: errors.schoolName ? '#EF4444' : 'rgba(255,255,255,0.15)', backgroundColor: 'rgba(255,255,255,0.05)', color: 'white' }} placeholder="School name" />
-                                {errors.schoolName && <p className="text-red-200 text-[10px] sm:text-xs mt-1">{errors.schoolName.message}</p>}
-                              </div>
-                              <div>
-                                <label className="block text-xs sm:text-sm font-medium mb-1.5 sm:mb-2 text-white drop-shadow">Class & Grade *</label>
-                                <select {...register("classGrade")} className="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg border-2 outline-none transition-all appearance-none text-sm sm:text-base" style={{ borderColor: errors.classGrade ? '#EF4444' : 'rgba(255,255,255,0.15)', backgroundColor: 'rgba(255,255,255,0.05)', color: 'white' }}>
-                                  <option value="" style={{ color: '#666' }}>Select grade</option>
-                                  {GRADES.map(grade => (
-                                    <option key={grade} value={grade} style={{ color: 'black' }}>{grade}</option>
-                                  ))}
-                                </select>
-                                {errors.classGrade && <p className="text-red-200 text-[10px] sm:text-xs mt-1">{errors.classGrade.message}</p>}
-                              </div>
-                            </div>
-                            <div>
-                              <label className="block text-xs sm:text-sm font-medium mb-1.5 sm:mb-2 text-white drop-shadow">Emergency Information</label>
-                              <textarea {...register("emergencyInfo")} className="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg border-2 outline-none transition-all min-h-16 sm:min-h-20 resize-none text-sm sm:text-base" style={{ borderColor: 'rgba(255,255,255,0.15)', backgroundColor: 'rgba(255,255,255,0.05)', color: 'white' }} placeholder="Any allergies or medical conditions?" />
-                            </div>
-                          </div>
-                        )}
-
-                        {currentPage === 1 && (
-                          <div className="space-y-3">
-                            <div>
-                              <label className="block text-xs sm:text-sm font-medium mb-1.5 sm:mb-2 text-white drop-shadow">Parent/Guardian Name *</label>
-                              <input {...register("parentName")} className="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg border-2 outline-none transition-all text-sm sm:text-base" style={{ borderColor: errors.parentName ? '#EF4444' : 'rgba(255,255,255,0.2)', backgroundColor: 'rgba(255,255,255,0.1)', color: 'white' }} placeholder="Full name" />
-                              {errors.parentName && <p className="text-red-200 text-[10px] sm:text-xs mt-1">{errors.parentName.message}</p>}
-                            </div>
-                            <div>
-                              <label className="block text-xs sm:text-sm font-medium mb-1.5 sm:mb-2 text-white drop-shadow">Contact Number *</label>
-                              <input {...register("contactNumber")} type="tel" className="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg border-2 outline-none transition-all text-sm sm:text-base" style={{ borderColor: errors.contactNumber ? '#EF4444' : 'rgba(255,255,255,0.2)', backgroundColor: 'rgba(255,255,255,0.1)', color: 'white' }} placeholder="+91 00000 00000" />
-                              {errors.contactNumber && <p className="text-red-200 text-[10px] sm:text-xs mt-1">{errors.contactNumber.message}</p>}
-                            </div>
-                            <div className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg sm:rounded-xl cursor-pointer bg-white/10 backdrop-blur-md border border-white/20" onClick={() => setValue("whatsappGroup", !whatsappGroup)}>
-                              <input type="checkbox" checked={whatsappGroup} onChange={(e) => setValue("whatsappGroup", e.target.checked)} className="w-4 sm:w-5 h-4 sm:h-5 rounded" style={{ accentColor: '#6367FF' }} />
-                              <span className="text-white text-xs sm:text-sm">Add me to WhatsApp Group</span>
-                            </div>
-                            <div>
-                              <label className="block text-xs sm:text-sm font-medium mb-1.5 sm:mb-2 text-white drop-shadow">Email (Optional)</label>
-                              <input {...register("email")} type="email" className="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg border-2 outline-none transition-all text-sm sm:text-base" style={{ borderColor: 'rgba(255,255,255,0.2)', backgroundColor: 'rgba(255,255,255,0.1)', color: 'white' }} placeholder="email@address.com" />
-                            </div>
-                            <div>
-                              <label className="block text-xs sm:text-sm font-medium mb-1.5 sm:mb-2 text-white drop-shadow">Home Address *</label>
-                              <textarea {...register("homeAddress")} className="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg border-2 outline-none transition-all min-h-16 sm:min-h-20 resize-none text-sm sm:text-base" style={{ borderColor: errors.homeAddress ? '#EF4444' : 'rgba(255,255,255,0.2)', backgroundColor: 'rgba(255,255,255,0.1)', color: 'white' }} placeholder="Full address" />
-                              {errors.homeAddress && <p className="text-red-200 text-[10px] sm:text-xs mt-1">{errors.homeAddress.message}</p>}
-                            </div>
-                          </div>
-                        )}
-
-                        {currentPage === 2 && (
-                          <div className="space-y-2">
-                            <div>
-                              <label className="block text-xs font-medium mb-1 text-white drop-shadow">Preferred Batch *</label>
-                              <div className="grid grid-cols-1 gap-1.5">
-                                {BATCHES.map(b => (
-                                  <div key={b} onClick={() => setValue("preferredBatch", b, { shouldValidate: true })} className="p-2 rounded-lg border-2 cursor-pointer transition-all" style={{ borderColor: preferredBatch === b ? '#6367FF' : 'rgba(255,255,255,0.2)', backgroundColor: preferredBatch === b ? 'rgba(99, 103, 255, 0.3)' : 'rgba(255,255,255,0.05)' }}>
-                                    <div className="flex items-center gap-2">
-                                      <div className="w-3 h-3 rounded-full border-2 flex items-center justify-center flex-shrink-0" style={{ borderColor: preferredBatch === b ? '#6367FF' : 'rgba(255,255,255,0.4)' }}>
-                                        {preferredBatch === b && <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: '#6367FF' }} />}
-                                      </div>
-                                      <span className="text-xs font-medium text-white">{b}</span>
-                                    </div>
-                                  </div>
-                                ))}
-                              </div>
-                              {errors.preferredBatch && <p className="text-red-200 text-[10px] mt-1">{errors.preferredBatch.message}</p>}
-                            </div>
-                            <div>
-                              <label className="block text-xs font-medium mb-1 text-white drop-shadow">Reading Level *</label>
-                              <div className="space-y-1">
-                                {READING_LEVELS.map(level => (
-                                  <div key={level} onClick={() => setValue("readingLevel", level, { shouldValidate: true })} className="p-1.5 rounded-lg border-2 cursor-pointer transition-all flex items-center gap-2" style={{ borderColor: readingLevel === level ? '#6367FF' : 'rgba(255,255,255,0.2)', backgroundColor: readingLevel === level ? 'rgba(99, 103, 255, 0.3)' : 'rgba(255,255,255,0.05)' }}>
-                                    <div className="w-3 h-3 rounded-full border-2 flex items-center justify-center flex-shrink-0" style={{ borderColor: readingLevel === level ? '#6367FF' : 'rgba(255,255,255,0.4)' }}>
-                                      {readingLevel === level && <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: '#6367FF' }} />}
-                                    </div>
-                                    <span className="text-[10px] text-white leading-tight">{level}</span>
-                                  </div>
-                                ))}
-                              </div>
-                              {errors.readingLevel && <p className="text-red-200 text-[10px] mt-1">{errors.readingLevel.message}</p>}
-                            </div>
-                            <div>
-                              <label className="block text-xs font-medium mb-1 text-white drop-shadow">What to improve? *</label>
-                              <div className="grid grid-cols-1 gap-1">
-                                {EXPECTATIONS_LIST.map(exp => (
-                                  <div key={exp} onClick={() => setValue("parentExpectations", exp, { shouldValidate: true })} className="p-1.5 rounded-lg border-2 cursor-pointer transition-all flex items-center gap-2" style={{ borderColor: parentExpectations === exp ? '#10B981' : 'rgba(255,255,255,0.2)', backgroundColor: parentExpectations === exp ? 'rgba(16, 185, 129, 0.3)' : 'rgba(255,255,255,0.05)' }}>
-                                    <div className="w-3 h-3 rounded-full border-2 flex items-center justify-center flex-shrink-0" style={{ borderColor: parentExpectations === exp ? '#10B981' : 'rgba(255,255,255,0.4)' }}>
-                                      {parentExpectations === exp && <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: '#10B981' }} />}
-                                    </div>
-                                    <span className="text-[10px] text-white">{exp}</span>
-                                  </div>
-                                ))}
-                              </div>
-                              {errors.parentExpectations && <p className="text-red-200 text-[10px] mt-1">{errors.parentExpectations.message}</p>}
-                            </div>
-                          </div>
-                        )}
-
-                        {currentPage === 3 && (
-                          <div className="space-y-3">
-                            <div className="p-3 sm:p-4 rounded-xl border-2 bg-white/5 backdrop-blur-md" style={{ borderColor: 'rgba(255,255,255,0.2)' }}>
-                              <h4 className="font-bold mb-2 sm:mb-3 text-white drop-shadow text-sm sm:text-base">Declaration</h4>
-                              <div className="flex items-start gap-2 sm:gap-3 cursor-pointer" onClick={() => setValue("declarationAgreed", !declarationAgreed, { shouldValidate: true })}>
-                                <input type="checkbox" checked={declarationAgreed} onChange={(e) => setValue("declarationAgreed", e.target.checked, { shouldValidate: true })} className="w-4 sm:w-5 h-4 sm:h-5 mt-0.5 rounded flex-shrink-0" style={{ accentColor: '#6367FF' }} />
-                                <span className="text-white/80 text-xs sm:text-sm">I confirm that the above information is correct and I allow my child to participate in the Summer Reading Camp.</span>
-                              </div>
-                              {errors.declarationAgreed && <p className="text-red-200 text-[10px] sm:text-xs mt-2 ml-6 sm:ml-8">{errors.declarationAgreed.message}</p>}
-                            </div>
-                            <div>
-                              <label className="block text-xs sm:text-sm font-medium mb-1.5 sm:mb-2 text-white drop-shadow">Parent Signature *</label>
-                              <input {...register("parentSignature")} className="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg border-2 outline-none transition-all text-sm sm:text-base" style={{ borderColor: errors.parentSignature ? '#EF4444' : 'rgba(255,255,255,0.2)', backgroundColor: 'rgba(255,255,255,0.1)', color: 'white' }} placeholder="Type your full name" />
-                              {errors.parentSignature && <p className="text-red-200 text-[10px] sm:text-xs mt-1">{errors.parentSignature.message}</p>}
-                            </div>
-                            <div className="p-2 sm:p-3 rounded-lg bg-white/10 backdrop-blur-md border border-white/20">
-                              <p className="text-white/70 text-xs sm:text-sm">Date: {new Date().toLocaleDateString('en-GB')}</p>
-                            </div>
-                          </div>
-                        )}
+                <HTMLFlipBook
+                  ref={flipBookRef}
+                  width={340}
+                  height={480}
+                  size="stretch"
+                  minWidth={320}
+                  minHeight={440}
+                  maxWidth={400}
+                  maxHeight={560}
+                  showCover={false}
+                  flippingTime={1000}
+                  maxShadowOpacity={0.8}
+                  mobileScrollSupport={false}
+                  className="flip-book"
+                  style={{ margin: '0 auto' }}
+                  startPage={0}
+                  usePortrait={true}
+                  drawShadow={true}
+                  startZIndex={0}
+                  clickEventForward={false}
+                  useMouseEvents={false}
+                  swipeDistance={0}
+                  showPageCorners={true}
+                  disableFlipByClick={true}
+                  autoSize={true}
+                >
+                  <Page style={pageStyle} className="p-4 sm:p-5">
+                    <div className="space-y-3">
+                      <div>
+                        <label className="block text-xs sm:text-sm font-medium mb-1.5 sm:mb-2 text-white drop-shadow">Child&apos;s Full Name *</label>
+                        <input {...register("childName")} className="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg border-2 outline-none transition-all text-sm sm:text-base" style={{ borderColor: errors.childName ? '#EF4444' : 'rgba(255,255,255,0.15)', backgroundColor: 'rgba(255,255,255,0.05)', color: 'white' }} placeholder="Enter name" />
+                        {errors.childName && <p className="text-red-200 text-[10px] sm:text-xs mt-1">{errors.childName.message}</p>}
                       </div>
-                    </motion.div>
-                  </AnimatePresence>
-                </div>
+                      <div>
+                        <label className="block text-xs sm:text-sm font-medium mb-1.5 sm:mb-2 text-white drop-shadow">Date of Birth *</label>
+                        <input {...register("dateOfBirth")} type="date" className="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg border-2 outline-none transition-all text-sm sm:text-base" style={{ borderColor: errors.dateOfBirth ? '#EF4444' : 'rgba(255,255,255,0.15)', backgroundColor: 'rgba(255,255,255,0.05)', color: 'white' }} />
+                        {errors.dateOfBirth && <p className="text-red-200 text-[10px] sm:text-xs mt-1">{errors.dateOfBirth.message}</p>}
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
+                        <div>
+                          <label className="block text-xs sm:text-sm font-medium mb-1.5 sm:mb-2 text-white drop-shadow">School Name *</label>
+                          <input {...register("schoolName")} className="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg border-2 outline-none transition-all text-sm sm:text-base" style={{ borderColor: errors.schoolName ? '#EF4444' : 'rgba(255,255,255,0.15)', backgroundColor: 'rgba(255,255,255,0.05)', color: 'white' }} placeholder="School name" />
+                          {errors.schoolName && <p className="text-red-200 text-[10px] sm:text-xs mt-1">{errors.schoolName.message}</p>}
+                        </div>
+                        <div>
+                          <label className="block text-xs sm:text-sm font-medium mb-1.5 sm:mb-2 text-white drop-shadow">Class & Grade *</label>
+                          <select {...register("classGrade")} className="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg border-2 outline-none transition-all appearance-none text-sm sm:text-base" style={{ borderColor: errors.classGrade ? '#EF4444' : 'rgba(255,255,255,0.15)', backgroundColor: 'rgba(255,255,255,0.05)', color: 'white' }}>
+                            <option value="" style={{ color: '#666' }}>Select grade</option>
+                            {GRADES.map(grade => (
+                              <option key={grade} value={grade} style={{ color: 'black' }}>{grade}</option>
+                            ))}
+                          </select>
+                          {errors.classGrade && <p className="text-red-200 text-[10px] sm:text-xs mt-1">{errors.classGrade.message}</p>}
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-xs sm:text-sm font-medium mb-1.5 sm:mb-2 text-white drop-shadow">Emergency Information</label>
+                        <textarea {...register("emergencyInfo")} className="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg border-2 outline-none transition-all min-h-16 sm:min-h-20 resize-none text-sm sm:text-base" style={{ borderColor: 'rgba(255,255,255,0.15)', backgroundColor: 'rgba(255,255,255,0.05)', color: 'white' }} placeholder="Any allergies or medical conditions?" />
+                      </div>
+                    </div>
+                  </Page>
+
+                  <Page style={pageStyle} className="p-4 sm:p-5">
+                    <div className="space-y-3">
+                      <div>
+                        <label className="block text-xs sm:text-sm font-medium mb-1.5 sm:mb-2 text-white drop-shadow">Parent/Guardian Name *</label>
+                        <input {...register("parentName")} className="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg border-2 outline-none transition-all text-sm sm:text-base" style={{ borderColor: errors.parentName ? '#EF4444' : 'rgba(255,255,255,0.2)', backgroundColor: 'rgba(255,255,255,0.1)', color: 'white' }} placeholder="Full name" />
+                        {errors.parentName && <p className="text-red-200 text-[10px] sm:text-xs mt-1">{errors.parentName.message}</p>}
+                      </div>
+                      <div>
+                        <label className="block text-xs sm:text-sm font-medium mb-1.5 sm:mb-2 text-white drop-shadow">Contact Number *</label>
+                        <input {...register("contactNumber")} type="tel" className="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg border-2 outline-none transition-all text-sm sm:text-base" style={{ borderColor: errors.contactNumber ? '#EF4444' : 'rgba(255,255,255,0.2)', backgroundColor: 'rgba(255,255,255,0.1)', color: 'white' }} placeholder="+91 00000 00000" />
+                        {errors.contactNumber && <p className="text-red-200 text-[10px] sm:text-xs mt-1">{errors.contactNumber.message}</p>}
+                      </div>
+                      <div className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg sm:rounded-xl cursor-pointer bg-white/10 backdrop-blur-md border border-white/20" onClick={() => setValue("whatsappGroup", !whatsappGroup)}>
+                        <input type="checkbox" checked={whatsappGroup} onChange={(e) => setValue("whatsappGroup", e.target.checked)} className="w-4 sm:w-5 h-4 sm:h-5 rounded" style={{ accentColor: '#6367FF' }} />
+                        <span className="text-white text-xs sm:text-sm">Add me to WhatsApp Group</span>
+                      </div>
+                      <div>
+                        <label className="block text-xs sm:text-sm font-medium mb-1.5 sm:mb-2 text-white drop-shadow">Email (Optional)</label>
+                        <input {...register("email")} type="email" className="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg border-2 outline-none transition-all text-sm sm:text-base" style={{ borderColor: 'rgba(255,255,255,0.2)', backgroundColor: 'rgba(255,255,255,0.1)', color: 'white' }} placeholder="email@address.com" />
+                      </div>
+                      <div>
+                        <label className="block text-xs sm:text-sm font-medium mb-1.5 sm:mb-2 text-white drop-shadow">Home Address *</label>
+                        <textarea {...register("homeAddress")} className="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg border-2 outline-none transition-all min-h-16 sm:min-h-20 resize-none text-sm sm:text-base" style={{ borderColor: errors.homeAddress ? '#EF4444' : 'rgba(255,255,255,0.2)', backgroundColor: 'rgba(255,255,255,0.1)', color: 'white' }} placeholder="Full address" />
+                        {errors.homeAddress && <p className="text-red-200 text-[10px] sm:text-xs mt-1">{errors.homeAddress.message}</p>}
+                      </div>
+                    </div>
+                  </Page>
+
+                  <Page style={pageStyle} className="p-3 sm:p-4">
+                    <div className="space-y-2">
+                      <div>
+                        <label className="block text-xs font-medium mb-1 text-white drop-shadow">Preferred Batch *</label>
+                        <div className="grid grid-cols-1 gap-1.5">
+                          {BATCHES.map(b => (
+                            <div key={b} onClick={() => setValue("preferredBatch", b, { shouldValidate: true })} className="p-2 rounded-lg border-2 cursor-pointer transition-all" style={{ borderColor: preferredBatch === b ? '#6367FF' : 'rgba(255,255,255,0.2)', backgroundColor: preferredBatch === b ? 'rgba(99, 103, 255, 0.3)' : 'rgba(255,255,255,0.05)' }}>
+                              <div className="flex items-center gap-2">
+                                <div className="w-3 h-3 rounded-full border-2 flex items-center justify-center flex-shrink-0" style={{ borderColor: preferredBatch === b ? '#6367FF' : 'rgba(255,255,255,0.4)' }}>
+                                  {preferredBatch === b && <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: '#6367FF' }} />}
+                                </div>
+                                <span className="text-xs font-medium text-white">{b}</span>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                        {errors.preferredBatch && <p className="text-red-200 text-[10px] mt-1">{errors.preferredBatch.message}</p>}
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium mb-1 text-white drop-shadow">Reading Level *</label>
+                        <div className="space-y-1">
+                          {READING_LEVELS.map(level => (
+                            <div key={level} onClick={() => setValue("readingLevel", level, { shouldValidate: true })} className="p-1.5 rounded-lg border-2 cursor-pointer transition-all flex items-center gap-2" style={{ borderColor: readingLevel === level ? '#6367FF' : 'rgba(255,255,255,0.2)', backgroundColor: readingLevel === level ? 'rgba(99, 103, 255, 0.3)' : 'rgba(255,255,255,0.05)' }}>
+                              <div className="w-3 h-3 rounded-full border-2 flex items-center justify-center flex-shrink-0" style={{ borderColor: readingLevel === level ? '#6367FF' : 'rgba(255,255,255,0.4)' }}>
+                                {readingLevel === level && <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: '#6367FF' }} />}
+                              </div>
+                              <span className="text-[10px] text-white leading-tight">{level}</span>
+                            </div>
+                          ))}
+                        </div>
+                        {errors.readingLevel && <p className="text-red-200 text-[10px] mt-1">{errors.readingLevel.message}</p>}
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium mb-1 text-white drop-shadow">What to improve? *</label>
+                        <div className="grid grid-cols-1 gap-1">
+                          {EXPECTATIONS_LIST.map(exp => (
+                            <div key={exp} onClick={() => setValue("parentExpectations", exp, { shouldValidate: true })} className="p-1.5 rounded-lg border-2 cursor-pointer transition-all flex items-center gap-2" style={{ borderColor: parentExpectations === exp ? '#10B981' : 'rgba(255,255,255,0.2)', backgroundColor: parentExpectations === exp ? 'rgba(16, 185, 129, 0.3)' : 'rgba(255,255,255,0.05)' }}>
+                              <div className="w-3 h-3 rounded-full border-2 flex items-center justify-center flex-shrink-0" style={{ borderColor: parentExpectations === exp ? '#10B981' : 'rgba(255,255,255,0.4)' }}>
+                                {parentExpectations === exp && <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: '#10B981' }} />}
+                              </div>
+                              <span className="text-[10px] text-white">{exp}</span>
+                            </div>
+                          ))}
+                        </div>
+                        {errors.parentExpectations && <p className="text-red-200 text-[10px] mt-1">{errors.parentExpectations.message}</p>}
+                      </div>
+                    </div>
+                  </Page>
+
+                  <Page style={pageStyle} className="p-4 sm:p-5">
+                    <div className="space-y-3">
+                      <div className="p-3 sm:p-4 rounded-xl border-2 bg-white/5 backdrop-blur-md" style={{ borderColor: 'rgba(255,255,255,0.2)' }}>
+                        <h4 className="font-bold mb-2 sm:mb-3 text-white drop-shadow text-sm sm:text-base">Declaration</h4>
+                        <div className="flex items-start gap-2 sm:gap-3 cursor-pointer" onClick={() => setValue("declarationAgreed", !declarationAgreed, { shouldValidate: true })}>
+                          <input type="checkbox" checked={declarationAgreed} onChange={(e) => setValue("declarationAgreed", e.target.checked, { shouldValidate: true })} className="w-4 sm:w-5 h-4 sm:h-5 mt-0.5 rounded flex-shrink-0" style={{ accentColor: '#6367FF' }} />
+                          <span className="text-white/80 text-xs sm:text-sm">I confirm that the above information is correct and I allow my child to participate in the Summer Reading Camp.</span>
+                        </div>
+                        {errors.declarationAgreed && <p className="text-red-200 text-[10px] sm:text-xs mt-2 ml-6 sm:ml-8">{errors.declarationAgreed.message}</p>}
+                      </div>
+                      <div>
+                        <label className="block text-xs sm:text-sm font-medium mb-1.5 sm:mb-2 text-white drop-shadow">Parent Signature *</label>
+                        <input {...register("parentSignature")} className="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg border-2 outline-none transition-all text-sm sm:text-base" style={{ borderColor: errors.parentSignature ? '#EF4444' : 'rgba(255,255,255,0.2)', backgroundColor: 'rgba(255,255,255,0.1)', color: 'white' }} placeholder="Type your full name" />
+                        {errors.parentSignature && <p className="text-red-200 text-[10px] sm:text-xs mt-1">{errors.parentSignature.message}</p>}
+                      </div>
+                      <div className="p-2 sm:p-3 rounded-lg bg-white/10 backdrop-blur-md border border-white/20">
+                        <p className="text-white/70 text-xs sm:text-sm">Date: {new Date().toLocaleDateString('en-GB')}</p>
+                      </div>
+                    </div>
+                  </Page>
+                </HTMLFlipBook>
               </div>
 
               <div className="flex justify-between items-center mt-4 sm:mt-6">
