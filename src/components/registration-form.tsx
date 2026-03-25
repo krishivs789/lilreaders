@@ -158,7 +158,7 @@ export default function RegistrationForm() {
   };
 
   return (
-    <div className="min-h-screen p-2 sm:p-4 md:p-6 lg:p-8 font-form" style={{ background: 'linear-gradient(135deg, #6367FF 0%, #8494FF 100%)', backgroundAttachment: 'fixed' }}>
+    <div className="min-h-screen p-2 sm:p-4 md:p-6 lg:p-8 font-form" style={{ backgroundImage: 'linear-gradient(135deg, #6367FF 0%, #8494FF 100%)', backgroundAttachment: 'fixed' }}>
       <div className="fixed inset-0 overflow-hidden pointer-events-none" style={{ zIndex: 0 }}>
         <div className="absolute w-96 h-96 rounded-full opacity-40" style={{ background: 'radial-gradient(circle, #6367FF 0%, transparent 70%)', top: '-10%', left: '-10%' }} />
         <div className="absolute w-80 h-80 rounded-full opacity-30" style={{ background: 'radial-gradient(circle, #FFDBFD 0%, transparent 70%)', bottom: '10%', right: '-5%' }} />
